@@ -166,8 +166,8 @@ suite("Functional Tests", function () {
               .delete(`/api/books/${_id}`)
               .end((err, res) => {
                 assert.equal(res.text, "delete successful");
+                done();
               });
-            done();
           });
       });
 
@@ -177,8 +177,8 @@ suite("Functional Tests", function () {
           .delete("/api/books/foo")
           .end((err, res) => {
             assert.equal(res.text, "no book exists");
+            done();
           });
-        done();
       });
     });
   });
