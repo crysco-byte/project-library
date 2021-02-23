@@ -57,7 +57,7 @@ module.exports = function (app) {
     })
 
     .delete(function (req, res) {
-      books.deleteMany({ title: /.+/g }, (err, n) => {
+      book.remove({}, (err, n) => {
         if (err) return res.send(err);
         res.send("complete delete successful");
       });
