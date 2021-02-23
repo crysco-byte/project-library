@@ -14,7 +14,7 @@ mongoose.connect(process.env.DB, {
   useUnifiedTopology: true,
 });
 const bookSchema = new mongoose.Schema({
-  comment: [String],
+  comments: [String],
   title: String,
   commentcount: Number,
 });
@@ -82,7 +82,7 @@ module.exports = function (app) {
 
       book.findById(bookid, (err, doc) => {
         if (err) return res.send("no book exists");
-        doc.comment.push(comment);
+        doc.comments.push(comment);
         doc.commentcount += 1;
         doc.save();
         res.send(doc);
