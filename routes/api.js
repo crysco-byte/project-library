@@ -75,18 +75,27 @@ module.exports = function (app) {
         .select("-__v");
     })
 
-    .post(function (req, res) {
+    .post(async function (req, res) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       if (comment == null) return res.send("missing required field comment");
+      let commentsLength = await book
+        .findById(bookid)
+        .select("comments")
+        .catch((e) => res.send("no book exists"));
+      let clen = commentsLength.comments.length;
 
-      book.findById(bookid, (err, doc) => {
-        if (err) return res.send("no book exists");
-        doc.comments.push(comment);
-        doc.commentcount += 1;
-        doc.save();
-        res.send(doc);
-      });
+      book.findOneAndUpdate(
+        { _id: bookid },
+        {
+          $push: { comments: comment },
+          commentcount: clen + 1,
+        },
+        (err, doc) => {
+          if (err) return res.send("no book exists");
+          res.send(doc);
+        }
+      );
     })
 
     .delete(function (req, res) {
