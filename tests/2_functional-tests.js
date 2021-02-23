@@ -120,11 +120,17 @@ suite("Functional Tests", function () {
         test("Test POST /api/books/[id] with comment", function (done) {
           chai
             .request(server)
-            .post("/api/books/6034f5d2d24c86340d8c7375")
-            .send({ comment: "test case" })
-            .end((err, res) => {
-              assert.include(res.body.comment, "test case");
-              done();
+            .get("/api/books")
+            .end(function (err, res) {
+              const _id = res.body[0]._id;
+              chai
+                .request(server)
+                .post(`/api/books/${_id}`)
+                .send({ comment: "test case" })
+                .end((err, res) => {
+                  assert.include(res.body.comment, "test case");
+                  done();
+                });
             });
         });
 
