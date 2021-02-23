@@ -67,12 +67,10 @@ module.exports = function (app) {
     .route("/api/books/:id")
     .get(function (req, res) {
       let bookid = req.params.id;
-      book
-        .findById(bookid, (err, doc) => {
-          if (err) return res.send("no book exists");
-          res.send(doc);
-        })
-        .select("-__v");
+      book.findById(bookid, (err, doc) => {
+        if (err) return res.send("no book exists");
+        res.send(doc);
+      });
     })
 
     .post(async function (req, res) {
@@ -84,6 +82,7 @@ module.exports = function (app) {
         .select("comments")
         .catch((e) => res.send("no book exists"));
       let clen = commentsLength.comments.length;
+      console.log("still func");
 
       book.findOneAndUpdate(
         { _id: bookid },
