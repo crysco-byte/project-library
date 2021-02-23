@@ -128,7 +128,7 @@ suite("Functional Tests", function () {
                 .post(`/api/books/${_id}`)
                 .send({ comment: "test case" })
                 .end((err, res) => {
-                  assert.include(res.body.comment, "test case");
+                  assert.include(res.body.comments, "test case");
                   done();
                 });
             });
