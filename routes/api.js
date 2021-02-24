@@ -68,7 +68,7 @@ module.exports = function (app) {
     .get(function (req, res) {
       let bookid = req.params.id;
       book.findById(bookid, (err, doc) => {
-        if (err) return res.send("no book exists");
+        if (doc == null) return res.send("no book exists");
         res.send(doc);
       });
     })
@@ -77,31 +77,20 @@ module.exports = function (app) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       if (comment == null) return res.send("missing required field comment");
-      let commentsLength = await book
-        .findById(bookid)
-        .select("comments")
-        .catch((e) => res.send("no book exists"));
-      let clen = commentsLength.comments.length;
-      book
-        .findOneAndUpdate(
-          { _id: bookid },
-          {
-            $push: { comments: comment },
-            commentcount: clen + 1,
-          },
-          (err, doc) => {
-            if (err) return res.send("no book exists");
-            res.send(doc);
-          }
-        )
-        .catch((e) => res.send("no book exists"));
+
+      book.findById(bookid, (err, doc) => {
+        if (doc == null) return res.send("no book exists");
+        doc.comments.push(comment);
+        doc.commentcount = doc.comments.length;
+        doc.save();
+        res.send(doc);
+      });
     })
 
     .delete(function (req, res) {
       let bookid = req.params.id;
       book.deleteOne({ _id: bookid }, (err, n) => {
-        console.log(err);
-        if (err) return res.send("no book exists");
+        if (n !== 1) return res.send("no book exists");
         res.send("delete successful");
       });
     });
