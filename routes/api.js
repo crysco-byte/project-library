@@ -82,24 +82,25 @@ module.exports = function (app) {
         .select("comments")
         .catch((e) => res.send("no book exists"));
       let clen = commentsLength.comments.length;
-      console.log("still func");
-
-      book.findOneAndUpdate(
-        { _id: bookid },
-        {
-          $push: { comments: comment },
-          commentcount: clen + 1,
-        },
-        (err, doc) => {
-          if (err) return res.send("no book exists");
-          res.send(doc);
-        }
-      );
+      book
+        .findOneAndUpdate(
+          { _id: bookid },
+          {
+            $push: { comments: comment },
+            commentcount: clen + 1,
+          },
+          (err, doc) => {
+            if (err) return res.send("no book exists");
+            res.send(doc);
+          }
+        )
+        .catch((e) => res.send("no book exists"));
     })
 
     .delete(function (req, res) {
       let bookid = req.params.id;
       book.deleteOne({ _id: bookid }, (err, n) => {
+        console.log(err);
         if (err) return res.send("no book exists");
         res.send("delete successful");
       });
