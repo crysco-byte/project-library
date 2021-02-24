@@ -87,11 +87,17 @@ module.exports = function (app) {
       });
     })
 
-    .delete(function (req, res) {
+    .delete(async function (req, res) {
       let bookid = req.params.id;
-      book.remove({ _id: bookid }, (err, n) => {
-        if (err) return res.send("no book exists");
-        res.send("delete successful");
-      });
+      try {
+        let n = await book.deleteOne({ _id: bookid });
+        if (n.n === 1) {
+          return res.send("delete successful");
+        } else {
+          return res.send("no book exists");
+        }
+      } catch (e) {
+        res.send("no book exists");
+      }
     });
 };
