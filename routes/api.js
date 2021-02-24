@@ -89,8 +89,8 @@ module.exports = function (app) {
 
     .delete(function (req, res) {
       let bookid = req.params.id;
-      book.deleteOne({ _id: bookid }, (err, n) => {
-        if (n !== 1) return res.send("no book exists");
+      book.remove({ _id: bookid }, (err, n) => {
+        if (err) return res.send("no book exists");
         res.send("delete successful");
       });
     });
